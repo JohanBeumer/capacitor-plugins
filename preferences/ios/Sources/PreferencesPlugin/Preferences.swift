@@ -1,7 +1,7 @@
 import Foundation
 
-public struct PreferencesConfiguration {
-    public enum Group {
+public struct PreferencesConfiguration: Equatable {
+    public enum Group: Equatable {
         case named(String), cordovaNativeStorage
     }
 
@@ -10,13 +10,27 @@ public struct PreferencesConfiguration {
     public init(for group: Group = .named("CapacitorStorage")) {
         self.group = group
     }
+    
+    var groupName: String {
+           switch group {
+           case .named(let name):
+               return name
+           case .cordovaNativeStorage:
+               return "CapacitorStorage"
+           }
+       }
 }
 
 public class Preferences {
     private let configuration: PreferencesConfiguration
 
     private var defaults: UserDefaults {
-        return UserDefaults.standard
+        if configuration.group == PreferencesConfiguration.Group.cordovaNativeStorage {
+            return UserDefaults.standard
+        }
+        else {
+            return UserDefaults(suiteName: configuration.groupName)!
+        }
     }
 
     private var prefix: String {
