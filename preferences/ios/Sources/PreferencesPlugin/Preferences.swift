@@ -11,7 +11,7 @@ public struct PreferencesConfiguration: Equatable {
         self.group = group
     }
     
-    var groupName: String {
+    var suiteName: String {
            switch group {
            case .named(let name):
                return name
@@ -25,11 +25,11 @@ public class Preferences {
     private let configuration: PreferencesConfiguration
 
     private var defaults: UserDefaults {
-        if configuration.group == PreferencesConfiguration.Group.cordovaNativeStorage {
+        if (configuration.group == PreferencesConfiguration.Group.cordovaNativeStorage || configuration.suiteName.isEmpty) {
             return UserDefaults.standard
         }
         else {
-            return UserDefaults(suiteName: configuration.groupName)!
+            return UserDefaults(suiteName: configuration.suiteName)!
         }
     }
 
